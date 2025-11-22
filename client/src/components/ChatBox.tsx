@@ -8,7 +8,7 @@ import type { Message } from "../types";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
 
-const ENDPOINT = "http://localhost:4000";
+const ENDPOINT = "https://chat-buddies-y1jm.onrender.com";
 let socket: Socket;
 
 const ChatBox = () => {

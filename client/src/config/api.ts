@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:4000/api", // Adjust if your port differs
+  baseURL: "https://chat-buddies-y1jm.onrender.com/api", // Adjust if your port differs
 });
 
 API.interceptors.request.use((req) => {
