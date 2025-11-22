@@ -23,10 +23,14 @@ const AuthPage = () => {
   // Form States
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Instant Validation Logic: Check if confirm password exists but doesn't match
+  const isPasswordMismatch = !isLogin && confirmPassword.length > 0 && password !== confirmPassword;
 
   // Handle Avatar Preview
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,6 +60,12 @@ const AuthPage = () => {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (password !== confirmPassword) {
+        toast.error("Passwords do not match");
+        return;
+    }
+
     setLoading(true);
     
     const formData = new FormData();
@@ -84,6 +94,7 @@ const AuthPage = () => {
     setIsLogin(!isLogin);
     setEmail("");
     setPassword("");
+    setConfirmPassword("");
     setName("");
     setAvatar(null);
     setAvatarPreview(null);
@@ -117,7 +128,10 @@ const AuthPage = () => {
                     type="text"
                     placeholder="Full Name"
                     className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => {
+                        const formattedName = e.target.value.replace(/\b\w/g, (char) => char.toUpperCase());
+                        setName(formattedName);
+                    }}
                     value={name}
                     required
                 />
@@ -150,6 +164,34 @@ const AuthPage = () => {
                 required
             />
           </div>
+
+          {!isLogin && (
+            <div className="flex flex-col gap-1">
+                <div className="relative group">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        {/* Icon color changes based on mismatch status */}
+                        <Lock className={`transition ${isPasswordMismatch ? "text-red-500" : "text-gray-500 group-focus-within:text-blue-500"}`} size={20} />
+                    </div>
+                    <input
+                        type="password"
+                        placeholder="Confirm Password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        // Conditional border colors
+                        className={`w-full pl-10 pr-4 py-3 bg-gray-800 border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-1 transition
+                        ${isPasswordMismatch 
+                            ? "border-red-500 focus:border-red-500 focus:ring-red-500" 
+                            : "border-gray-700 focus:border-blue-500 focus:ring-blue-500"
+                        }`}
+                        required
+                    />
+                </div>
+                {/* Instant Validation Message */}
+                {isPasswordMismatch && (
+                    <p className="text-red-500 text-xs pl-1">Passwords do not match</p>
+                )}
+            </div>
+          )}
 
           {!isLogin && (
             <div className="flex items-center gap-4">

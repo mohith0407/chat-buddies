@@ -8,7 +8,7 @@ import type { Message } from "../types";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
 
-const ENDPOINT = "https://chat-buddies-y1jm.onrender.com";
+const ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 let socket: Socket;
 
 const ChatBox = () => {
