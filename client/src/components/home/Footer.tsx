@@ -5,9 +5,9 @@ import { FaXTwitter } from "react-icons/fa6";
 
 const Footer = () => {
   // State to track which section is open on mobile
-  const [openSection, setOpenSection] = useState(null);
+  const [openSection, setOpenSection] = useState<string | null>(null);
 
-  const toggleSection = (title) => {
+  const toggleSection = (title:string) => {
     setOpenSection(openSection === title ? null : title);
   };
 
