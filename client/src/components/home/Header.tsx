@@ -3,7 +3,6 @@ import { MessageSquare, Menu, X} from "lucide-react";
 import { Link } from "react-router-dom";
 import { useChatState } from "../../context/ChatProvider";
 
-// --- NAVIGATION LINKS ---
 const NAV_LINKS = [
     { name: "Features", href: "#features" },
     { name: "Pricing", href: "#pricing" },

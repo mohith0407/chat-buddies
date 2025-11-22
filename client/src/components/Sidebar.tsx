@@ -186,7 +186,7 @@ const Sidebar = () => {
                         {!chat.isGroupChat ? getSender(user, chat.users) : chat.chatName}
                     </p>
                     {notifCount > 0 && (
-                        <span className="bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full min-w-[20px] text-center">
+                        <span className="bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full min-w-5 text-center">
                             {notifCount > 9 ? "9+" : notifCount}
                         </span>
                     )}

@@ -42,7 +42,6 @@ const InfoSidebar = () => {
     });
   }, [selectedChat.users, selectedChat.groupAdmin, isGroup]);
 
-  // --- HANDLERS ---
 
   const handleRename = async () => {
     if (!groupName) return;
@@ -262,7 +261,7 @@ const InfoSidebar = () => {
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
                 <div className="bg-gray-800 w-full max-w-sm rounded-2xl shadow-2xl border border-gray-700 overflow-hidden transform transition-all scale-100">
                     {/* Modal Header */}
-                    <div className="h-24 bg-gradient-to-r from-blue-600 to-purple-600 relative">
+                    <div className="h-24 bg-linear-to-r from-blue-600 to-purple-600 relative">
                         <button 
                             onClick={() => setViewUser(null)}
                             className="absolute top-3 right-3 text-white/80 hover:text-white bg-black/20 hover:bg-black/40 rounded-full p-1 transition"

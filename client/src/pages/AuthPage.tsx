@@ -1,4 +1,3 @@
-// src/pages/AuthPage.tsx
 import React, { useEffect, useState } from "react";
 import API from "../config/api";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -83,7 +82,6 @@ const AuthPage = () => {
 
   const toggleMode = () => {
     setIsLogin(!isLogin);
-    // Reset form fields when switching
     setEmail("");
     setPassword("");
     setName("");
@@ -94,7 +92,6 @@ const AuthPage = () => {
   return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4 relative overflow-hidden">
       
-      {/* Background Decoration (Optional: Adds a subtle glow) */}
       <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-600/20 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-purple-600/20 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
@@ -111,7 +108,6 @@ const AuthPage = () => {
         
         <form onSubmit={isLogin ? handleLogin : handleRegister} className="space-y-5">
           
-          {/* Name Field (Register Only) */}
           {!isLogin && (
             <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -127,8 +123,6 @@ const AuthPage = () => {
                 />
             </div>
           )}
-
-          {/* Email Field */}
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Mail className="text-gray-500 group-focus-within:text-blue-500 transition" size={20} />
@@ -143,7 +137,6 @@ const AuthPage = () => {
             />
           </div>
 
-          {/* Password Field */}
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Lock className="text-gray-500 group-focus-within:text-blue-500 transition" size={20} />
@@ -158,7 +151,6 @@ const AuthPage = () => {
             />
           </div>
 
-          {/* Avatar Upload (Register Only) */}
           {!isLogin && (
             <div className="flex items-center gap-4">
                 <div className="shrink-0">
@@ -188,7 +180,6 @@ const AuthPage = () => {
             </div>
           )}
           
-          {/* Submit Button */}
           <button
             disabled={loading}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl transition duration-200 font-semibold flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20"
@@ -203,7 +194,6 @@ const AuthPage = () => {
           </button>
         </form>
 
-        {/* Toggle Login/Register */}
         <div className="text-center mt-6">
           <p className="text-sm text-gray-500">
             {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}

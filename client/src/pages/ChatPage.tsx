@@ -1,4 +1,3 @@
-import React from "react";
 import { useChatState } from "../context/ChatProvider";
 import Sidebar from "../components/Sidebar";
 import ChatBox from "../components/ChatBox";

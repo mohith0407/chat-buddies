@@ -5,13 +5,16 @@ import type { User, Chat } from "../types";
 interface ChatContextType {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
+
   selectedChat: Chat | null;
   setSelectedChat: React.Dispatch<React.SetStateAction<Chat | null>>;
+  // Chats state
   chats: Chat[];
   setChats: React.Dispatch<React.SetStateAction<Chat[]>>;
+  // State for notifications
   notification: any[];
   setNotification: React.Dispatch<React.SetStateAction<any[]>>;
-  // NEW: State for Info Sidebar
+  // State for Info Sidebar
   isProfileOpen: boolean;
   setIsProfileOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
