@@ -38,7 +38,7 @@ const server = app.listen(PORT, () => console.log(`Server started on port ${PORT
 const io = new Server(server, {
   pingTimeout: 50000,
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
   },
 });
 io.on("connection", (socket) => {
