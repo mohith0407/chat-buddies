@@ -106,7 +106,7 @@ const Footer = () => {
                 </button>
               </div>
               <p className="text-gray-500 text-xs">
-                Contact: <a href="mailto:support@chatbuddies.com" className="text-blue-400 hover:underline">support@chatbuddies.com</a>
+                Contact: <a href="mailto:mohith.dev0407@gmail.com" className="text-blue-400 hover:underline">support@chatbuddies.com</a>
               </p>
             </div>
           </div>
