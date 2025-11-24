@@ -2,11 +2,12 @@ import { useEffect, useState, useMemo } from "react";
 import { useChatState } from "../../../context/ChatProvider";
 import API from "../../../config/api";
 import { toast } from "react-toastify";
-import { Plus, Search, LogOut, Loader2, Users, User as UserIcon } from "lucide-react";
+import {  Search,  Loader2, Users, User as UserIcon } from "lucide-react";
 import { UserAvatar } from "../../UserAvatar";
 import { getSender, getSenderFull } from "../../../utils/chatLogics";
 import type { User, Chat } from "../../../types";
 import GroupModal from "../groupmodel/GroupModel";
+import Header from "./Header";
 
 
 const Sidebar = () => {
@@ -94,10 +95,6 @@ const Sidebar = () => {
     } catch (error) { toast.error("Failed to create group"); }
   }
 
-  const logout = () => {
-    localStorage.removeItem("userInfo");
-    window.location.href = "/";
-  };
 
   const getNotificationCount = (chatId: string) => notification.filter((n) => n.chat._id === chatId).length;
 
@@ -106,16 +103,7 @@ const Sidebar = () => {
     <div className={`flex flex-col h-full bg-gray-900 border-r border-gray-800 ${selectedChat ? "hidden md:flex" : "flex"} w-full md:w-1/3 lg:w-1/4`}>
 
       {/* 2. Header: Darker gray for distinction */}
-      <div className="p-4 bg-gray-900 flex justify-between items-center border-b border-gray-800">
-        <div className="flex items-center gap-3">
-          <UserAvatar user={user || undefined} />
-          <span className="font-bold text-gray-100 truncate max-w-[120px]">{user?.name}</span>
-        </div>
-        <div className="flex gap-2">
-          <button title="Create Group" onClick={() => setShowGroupModal(!showGroupModal)} className="p-2 hover:bg-gray-800 rounded-full text-gray-400 transition"><Plus size={20} /></button>
-          <button title="Logout" onClick={logout} className="p-2 hover:bg-gray-800 rounded-full text-red-400 transition"><LogOut size={20} /></button>
-        </div>
-      </div>
+      <Header onCreateGroup={() => setShowGroupModal(true)} />
 
       {/* 3. Search Bar: Dark Input */}
       <div className="p-3 border-b border-gray-800">
