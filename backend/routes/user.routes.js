@@ -11,6 +11,6 @@ router.post("/login",authUser)
 
 router.route("/").get(protect, allUsers);
 router.route("/profile").put(protect, upload.single("avatar"), updateUserProfile);
-router.route("/password").put(protect, updatePassword);
-router.route("/delete").delete(protect, deleteUserAccount);
+router.route("/updatePassword").put(protect, updatePassword);
+router.route("/deletePassword").delete(protect, deleteUserAccount);
 export default router

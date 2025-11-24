@@ -2,6 +2,7 @@ import asyncHandler from "express-async-handler"
 import User from "../models/user.model.js";
 import generateToken from "../config/generateToken.js";
 import uploadToCloudinary from "../utils/uploadToCloudinary.js";
+import Chat from "../models/chat.model.js";
 
 // --------------------------Register------------------------------
 
