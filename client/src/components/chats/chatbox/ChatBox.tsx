@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useChatState } from "../context/ChatProvider";
-import API from "../config/api";
+import { useChatState } from "../../../context/ChatProvider";
+import API from "../../../config/api";
 import { Send, Info, ArrowLeft, Trash2, CheckSquare, Square, X } from "lucide-react";
 import io, { Socket } from "socket.io-client";
-import { getSenderFull, getSender } from "../utils/chatLogics";
-import type { Message } from "../types";
+import { getSenderFull, getSender } from "../../../utils/chatLogics";
+import type { Message } from "../../../types";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
 

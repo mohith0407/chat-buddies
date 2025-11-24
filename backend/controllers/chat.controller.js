@@ -92,7 +92,7 @@ const createGroupChat = asyncHandler(async (req, res) => {
   }
 
   users.push(req.user);
- let groupPicUrl; 
+  let groupPicUrl;
   if (req.file) {
     try {
       groupPicUrl = await uploadToCloudinary(req.file.buffer);
@@ -200,6 +200,7 @@ const addToGroup = asyncHandler(async (req, res) => {
 });
 
 // --------------------------Update Group Icon------------------------------
+
 const updateGroupIcon = asyncHandler(async (req, res) => {
   const { chatId } = req.body;
 

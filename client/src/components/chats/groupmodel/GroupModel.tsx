@@ -1,8 +1,8 @@
 import React from "react";
 import { X, Check, UserPlus } from "lucide-react";
-import type { User } from "../../types";
-import { UserAvatar } from "../UserAvatar";
-import { toTitleCase } from "../../utils/toTitleCase";
+import type { User } from "../../../types";
+import { UserAvatar } from "../../UserAvatar";
+import { toTitleCase } from "../../../utils/toTitleCase";
 
 interface GroupModalProps {
   show: boolean;

@@ -1,11 +1,11 @@
 import { useState, useMemo } from "react";
-import { useChatState } from "../context/ChatProvider";
-import { getSenderFull } from "../utils/chatLogics";
-import { UserAvatar } from "./UserAvatar";
+import { useChatState } from "../../../context/ChatProvider";
+import { getSenderFull } from "../../../utils/chatLogics";
+import { UserAvatar } from "../../UserAvatar";
 import { X, UserPlus, Trash2, Edit2, Check, Mail, User as UserIcon } from "lucide-react";
-import API from "../config/api";
+import API from "../../../config/api";
 import { toast } from "react-toastify";
-import type { User } from "../types";
+import type { User } from "../../../types";
 
 const InfoSidebar = () => {
   const { selectedChat, user, setIsProfileOpen, setSelectedChat } = useChatState();

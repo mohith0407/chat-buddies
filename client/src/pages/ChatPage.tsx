@@ -1,7 +1,7 @@
 import { useChatState } from "../context/ChatProvider";
-import Sidebar from "../components/Sidebar";
-import ChatBox from "../components/ChatBox";
-import InfoSidebar from "../components/InfoSidebar";
+import Sidebar from "../components/chats/sidebar/Sidebar";
+import ChatBox from "../components/chats/chatbox/ChatBox";
+import InfoSidebar from "../components/chats/infosidebar/InfoSidebar";
 
 const ChatPage = () => {
   const { user, isProfileOpen, selectedChat } = useChatState();
