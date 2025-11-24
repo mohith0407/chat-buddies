@@ -128,11 +128,6 @@ const GroupModal: React.FC<GroupModalProps> = ({
           disabled={loading}
           className="w-full mt-5 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50"
         >
-          {loading ? (
-            <span className="animate-spin border-2 border-white/30 border-t-transparent w-4 h-4 rounded-full"></span>
-          ) : (
-            <Check size={18} />
-          )}
           {loading
   ? "Creating..."
   : `Create Group (${selectedUsers.length})`}
