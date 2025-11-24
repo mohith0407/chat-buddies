@@ -6,6 +6,7 @@ import { Plus, Search, LogOut, Loader2, Users, User as UserIcon } from "lucide-r
 import { UserAvatar } from "./UserAvatar";
 import { getSender, getSenderFull } from "../utils/chatLogics";
 import type { User, Chat } from "../types";
+import GroupModal from "../components/groupmodel/GroupModel";
 
 const Sidebar = () => {
   const { user, setSelectedChat, chats, setChats, selectedChat, notification, setNotification } = useChatState();
@@ -16,7 +17,10 @@ const Sidebar = () => {
   const [showGroupModal, setShowGroupModal] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
-
+  // group model
+  // const [showGroupModal, setShowGroupModal] = useState(false);
+const [groupSearchText, setGroupSearchText] = useState("");
+const [groupSearchResults, setGroupSearchResults] = useState<User[]>([]);
   const fetchChats = async () => {
     try {
       const { data } = await API.get("/chat");
@@ -73,6 +77,9 @@ const Sidebar = () => {
         toast.warning("Need name and at least 2 users");
         return;
     }
+    if (chats.some((c) => c.isGroupChat && c.chatName.toLowerCase() === groupName.toLowerCase())) {
+  return toast.error("A group with this name already exists");
+}
     try {
         const { data } = await API.post("/chat/group", {
             name: groupName,
@@ -80,6 +87,10 @@ const Sidebar = () => {
         });
         setChats([data, ...chats]);
         setShowGroupModal(false);
+        setGroupName("");
+    setSelectedUsers([]);
+    setGroupSearchText("");
+    setGroupSearchResults([]);
         toast.success("Group Created");
     } catch (error) { toast.error("Failed to create group"); }
   }
@@ -209,31 +220,40 @@ const Sidebar = () => {
       </div>
 
       {/* 4. Group Modal: Dark Theme */}
-      {showGroupModal && (
-          <div className="absolute top-16 left-4 bg-gray-800 shadow-2xl shadow-black/50 border border-gray-700 p-4 rounded-xl w-80 z-50">
-            <h3 className="font-bold mb-2 text-white">Create Group</h3>
-            <input className="w-full border border-gray-600 bg-gray-900 text-white rounded p-2 mb-2 focus:outline-none focus:border-blue-500" placeholder="Group Name" onChange={(e) => setGroupName(e.target.value)} />
-            <input className="w-full border border-gray-600 bg-gray-900 text-white rounded p-2 mb-2 focus:outline-none focus:border-blue-500" placeholder="Search Users" onChange={(e) => handleSearch(e.target.value)} />
-            <div className="flex flex-wrap gap-1 mb-2">
-                {selectedUsers.map(u => (
-                    <span key={u._id} onClick={() => setSelectedUsers(selectedUsers.filter(sel => sel._id !== u._id))} className="bg-blue-600 text-white text-xs px-2 py-1 rounded cursor-pointer hover:bg-blue-700">{u.name} X</span>
-                ))}
-            </div>
-            <div className="max-h-32 overflow-y-auto mb-2">
-                {searchResultUsers.slice(0,4).map(u => (
-                    <div key={u._id} onClick={() => {
-                        if(!selectedUsers.find(sel => sel._id === u._id)) setSelectedUsers([...selectedUsers, u]);
-                    }} className="p-2 hover:bg-gray-700 cursor-pointer text-sm flex items-center gap-2 text-gray-200 rounded">
-                        <UserAvatar user={u} /> {u.name}
-                    </div>
-                ))}
-            </div>
-            <div className="flex gap-2">
-                <button onClick={handleCreateGroup} className="bg-blue-600 hover:bg-blue-700 text-white flex-1 py-2 rounded-lg transition">Create</button>
-                <button onClick={() => setShowGroupModal(false)} className="bg-gray-700 hover:bg-gray-600 text-gray-200 flex-1 py-2 rounded-lg transition">Cancel</button>
-            </div>
-         </div>
-      )}
+     <GroupModal
+  show={showGroupModal}
+  onClose={() => {
+    setShowGroupModal(false);
+    setGroupSearchText("");
+    setSelectedUsers([]);
+  }}
+  groupName={groupName}
+  setGroupName={setGroupName}
+  searchText={groupSearchText}
+  onSearchTextChange={async (v) => {
+    setGroupSearchText(v);
+    if (!v) return setGroupSearchResults([]);
+    try {
+      const { data } = await API.get(`/user?search=${v}`);
+      setGroupSearchResults(data);
+    } catch {}
+  }}
+  searchResults={groupSearchResults}
+  selectedUsers={selectedUsers}
+  addUser={(u) => {
+    if (!selectedUsers.find((x) => x._id === u._id)) {
+      setSelectedUsers([...selectedUsers, u]);
+    }
+    setGroupSearchText("");
+    setGroupSearchResults([]);
+  }}
+  removeUser={(id) =>
+    setSelectedUsers(selectedUsers.filter((u) => u._id !== id))
+  }
+  createGroup={handleCreateGroup}
+  loading={loading}
+/>
+
     </div>
   );
 };
