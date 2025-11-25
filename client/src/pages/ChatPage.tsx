@@ -15,7 +15,7 @@ const ChatPage = () => {
       </div>
       
       {user && selectedChat && isProfileOpen && (
-        <div className="absolute inset-y-0 right-0 z-50 md:static md:z-0 ">
+        <div className="absolute inset-y-0 right-0 z-50 w-80  md:static md:z-0 md:w-80 ">
           <InfoSidebar />
         </div>
       )}

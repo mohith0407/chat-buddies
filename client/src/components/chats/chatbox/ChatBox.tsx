@@ -245,7 +245,7 @@ const ChatBox = () => {
             </div>
 
             {/* 2. Messages Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-gray-950 relative">
+            <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-gray-950 relative custom-scrollbar">
                 {loading ? (
                     <div className="flex justify-center mt-10"><div className="animate-spin h-8 w-8 border-4 border-blue-600 rounded-full border-t-transparent"></div></div>
                 ) : (

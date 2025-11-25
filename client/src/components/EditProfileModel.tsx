@@ -100,8 +100,8 @@ const EditProfileModal: React.FC<Props> = ({ user, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-900 w-full max-w-lg rounded-2xl border border-gray-800 p-6 relative overflow-y-auto max-h-[90vh]">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 ">
+      <div className="bg-gray-900 w-full max-w-lg rounded-2xl border border-gray-800 p-6 relative overflow-y-auto max-h-[90vh] custom-scrollbar">
 
         {/* Close Button */}
         <button
