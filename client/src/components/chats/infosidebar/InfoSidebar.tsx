@@ -40,13 +40,16 @@ const InfoSidebar = () => {
     });
   }, [selectedChat.users, selectedChat.groupAdmin, isGroup]);
 
+  // ----------------------------
+  // LOGIC FUNCTIONS
+  // ----------------------------
 
+  // Rename group
   const handleRename = async () => {
     if (!groupName) return;
 
     try {
       setRenameLoading(true);
-
       const { data } = await API.put("/chat/rename", {
         chatId: selectedChat._id,
         chatName: groupName,
@@ -62,6 +65,7 @@ const InfoSidebar = () => {
     }
   };
 
+  // User search
   const handleSearch = async (query: string) => {
     setSearch(query);
 
@@ -76,74 +80,80 @@ const InfoSidebar = () => {
     }
   };
 
-  const handleAddUser = async (u: User) => {
+  // Add user (with silent mode)
+  const addUserToGroup = async (member: User, silent = false) => {
     try {
       const { data } = await API.put("/chat/groupadd", {
         chatId: selectedChat._id,
-        userId: u._id,
+        userId: member._id,
       });
 
       setSelectedChat(data);
-      toast.success(`${u.name} added`);
+      if (!silent) toast.success(`${member.name} added`);
     } catch (e: any) {
-      toast.error(e.response?.data?.message || "Failed to add user");
+      if (!silent) toast.error(e.response?.data?.message || "Failed to add user");
     }
   };
 
+  // Add multiple selected users
+  const addSelectedMembers = async () => {
+    for (let u of selectedToAdd) {
+      await addUserToGroup(u, true);
+    }
+    if(selectedToAdd.length==1)
+      toast.success(`${selectedToAdd.length} user added successfully`);
+    else
+      toast.success(`${selectedToAdd.length} users added successfully`);
+    setSelectedToAdd([]);
+    setSearch("");
+    setSearchResults([]);
+  };
+
+  // Remove user from group
   const handleRemoveUser = async (userId: string, userName?: string) => {
-  // -------------------- CONFIRMATION --------------------
-  let message;
+    let msg;
 
-  if (isAdmin && userId === user._id) {
-    message = "As admin, exiting will DELETE the group permanently. Continue?";
-  } else if (userId === user._id) {
-    message = "Are you sure you want to exit this group?";
-  } else {
-    message = `Remove ${userName || "this user"} from the group?`;
-  }
+    if (isAdmin && userId === user._id) {
+      msg = "As admin, exiting will DELETE the group permanently. Continue?";
+    } else if (userId === user._id) {
+      msg = "Are you sure you want to exit this group?";
+    } else {
+      msg = `Remove ${userName || "this user"} from the group?`;
+    }
 
-  const confirmed = window.confirm(message);
-  if (!confirmed) return;
-  // ------------------------------------------------------
+    if (!window.confirm(msg)) return;
 
-  try {
-    // If admin is removing THEMSELVES → delete group
-    if (isAdmin && userId === user._id && isGroup) {
-      await API.delete("/chat/group/delete", {
-        data: { chatId: selectedChat._id },
+    try {
+      if (isAdmin && userId === user._id && isGroup) {
+        await API.delete("/chat/group/delete", {
+          data: { chatId: selectedChat._id },
+        });
+
+        setSelectedChat(null);
+        setIsProfileOpen(false);
+        toast.success("Group deleted permanently");
+        return;
+      }
+
+      const { data } = await API.put("/chat/groupremove", {
+        chatId: selectedChat._id,
+        userId,
       });
 
-      setSelectedChat(null);
-      setIsProfileOpen(false);
-      toast.success("Group deleted permanently");
-      return;
+      if (userId === user._id) {
+        setSelectedChat(null);
+        setIsProfileOpen(false);
+      } else {
+        setSelectedChat(data);
+      }
+    } catch {
+      toast.error("Failed to remove user");
     }
+  };
 
-    // Normal removal
-    const { data } = await API.put("/chat/groupremove", {
-      chatId: selectedChat._id,
-      userId,
-    });
-
-    // If YOU removed yourself → close chat
-    if (userId === user._id) {
-      setSelectedChat(null);
-      setIsProfileOpen(false);
-    } else {
-      setSelectedChat(data);
-    }
-  } catch {
-    toast.error("Failed to remove user");
-  }
-};
-
-
-
+  // Delete group button
   const deleteGroupUI = async () => {
-    const ok = window.confirm(
-      "Are you sure you want to delete this group?\nThis will delete all messages and remove the group from everyone."
-    );
-    if (!ok) return;
+    if (!window.confirm("Delete this group permanently?")) return;
 
     try {
       await API.delete("/chat/group/delete", {
@@ -153,13 +163,14 @@ const InfoSidebar = () => {
       toast.success("Group deleted");
       setSelectedChat(null);
       setIsProfileOpen(false);
-    } catch (err) {
+    } catch {
       toast.error("Failed to delete group");
     }
   };
 
-  // -------------------------
-
+  // ----------------------------
+  // UI
+  // ----------------------------
   return (
     <>
       <div className="h-full bg-gray-900 border-l border-gray-800 shadow-xl w-full md:w-80 flex flex-col">
@@ -180,7 +191,7 @@ const InfoSidebar = () => {
         {/* BODY */}
         <div className="flex-1 overflow-y-auto p-4 custom-scrollbar w-full min-w-0">
 
-          {/* Avatar */}
+          {/* AVATAR */}
           <div className="flex flex-col items-center mb-6">
             {isGroup ? (
               <div className="w-24 h-24 rounded-full bg-gray-800 flex items-center justify-center text-3xl text-blue-500 font-bold mb-3">
@@ -193,7 +204,7 @@ const InfoSidebar = () => {
               />
             )}
 
-            {/* Group Name */}
+            {/* GROUP NAME */}
             {isGroup && isAdmin && isEditingName ? (
               <div className="flex items-center gap-2 w-full">
                 <input
@@ -232,11 +243,11 @@ const InfoSidebar = () => {
             {!isGroup && <p className="text-gray-400">{chatUser?.email}</p>}
           </div>
 
-          {/* GROUP USERS */}
+          {/* PARTICIPANTS */}
           {isGroup && (
             <div className="space-y-6">
 
-              {/* PARTICIPANTS */}
+              {/* USER LIST */}
               <div className="bg-gray-800 p-3 rounded-xl border border-gray-700">
                 <h3 className="text-xs font-bold text-blue-400 uppercase mb-3">
                   Participants ({selectedChat.users.length})
@@ -270,7 +281,7 @@ const InfoSidebar = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleRemoveUser(u._id);
+                            handleRemoveUser(u._id, u.name);
                           }}
                           className="text-gray-500 hover:text-red-400"
                         >
@@ -282,7 +293,7 @@ const InfoSidebar = () => {
                 </div>
               </div>
 
-              {/* ADD USERS */}
+              {/* ADD USERS SECTION */}
               {isAdmin && (
                 <div className="bg-gray-800 p-3 rounded-xl border border-gray-700">
 
@@ -290,7 +301,7 @@ const InfoSidebar = () => {
                     <UserPlus size={14} /> Add Members
                   </h3>
 
-                  {/* Selected Chips */}
+                  {/* Selected user chips */}
                   {selectedToAdd.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-3">
                       {selectedToAdd.map((u) => (
@@ -302,9 +313,7 @@ const InfoSidebar = () => {
                           <button
                             className="text-blue-300 hover:text-red-300"
                             onClick={() =>
-                              setSelectedToAdd(
-                                selectedToAdd.filter((x) => x._id !== u._id)
-                              )
+                              setSelectedToAdd(selectedToAdd.filter((x) => x._id !== u._id))
                             }
                           >
                             <X size={12} />
@@ -314,6 +323,7 @@ const InfoSidebar = () => {
                     </div>
                   )}
 
+                  {/* SEARCH */}
                   <input
                     value={search}
                     onChange={(e) => handleSearch(e.target.value)}
@@ -321,28 +331,24 @@ const InfoSidebar = () => {
                     className="w-full p-2 bg-gray-900 border border-gray-700 rounded-lg text-white"
                   />
 
-                  {loading ? (
-                    <p className="text-xs text-center text-gray-400 mt-2">
-                      Loading...
-                    </p>
-                  ) : (
+                  {/* Search results */}
+                  {!loading && (
                     <div className="max-h-32 overflow-y-auto mt-2 space-y-1 custom-scrollbar">
                       {searchResults.slice(0, 5).map((u) => {
-                        const alreadySelected = selectedToAdd.some(
-                          (x) => x._id === u._id
-                        );
-                        const alreadyInGroup = selectedChat.users.some(
-                          (x) => x._id === u._id
-                        );
+                        const alreadySelected = selectedToAdd.some((x) => x._id === u._id);
+                        const alreadyInGroup = selectedChat.users.some((x) => x._id === u._id);
 
                         return (
                           <div
                             key={u._id}
                             onClick={() => {
-                              if (alreadyInGroup)
-                                return toast.error("User already in group");
-                              if (!alreadySelected)
+                              if (alreadyInGroup) return toast.error("User already in group");
+
+                              if (!alreadySelected) {
                                 setSelectedToAdd([...selectedToAdd, u]);
+                                setSearch("");
+                                setSearchResults([]);
+                              }
                             }}
                             className={`flex items-center gap-2 p-2 border rounded-lg cursor-pointer ${
                               alreadySelected
@@ -353,9 +359,7 @@ const InfoSidebar = () => {
                             <UserAvatar user={u} />
                             <div>
                               <p className="text-sm text-gray-200">{u.name}</p>
-                              <p className="text-xs text-gray-500">
-                                {u.email}
-                              </p>
+                              <p className="text-xs text-gray-500">{u.email}</p>
                             </div>
                           </div>
                         );
@@ -365,14 +369,7 @@ const InfoSidebar = () => {
 
                   {selectedToAdd.length > 0 && (
                     <button
-                      onClick={async () => {
-                        for (let u of selectedToAdd) {
-                          await handleAddUser(u);
-                        }
-                        setSelectedToAdd([]);
-                        setSearch("");
-                        setSearchResults([]);
-                      }}
+                      onClick={addSelectedMembers}
                       className="w-full py-2 bg-blue-600 text-white rounded-lg mt-3 hover:bg-blue-700"
                     >
                       Add {selectedToAdd.length} Members
@@ -389,7 +386,7 @@ const InfoSidebar = () => {
                 <Trash2 size={18} className="inline-block mr-2" /> Exit Group
               </button>
 
-              {/* DELETE GROUP (Admin only) */}
+              {/* DELETE GROUP */}
               {isAdmin && (
                 <button
                   onClick={deleteGroupUI}
