@@ -21,7 +21,9 @@ app.use("/api/message", messageRouter)
 app.get("/", (req, res) => {
   res.send("hello chat-app")
 })
-
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ status: "ok", time: new Date() });
+});
 // --------------------------Middlewares------------------------------
 
 app.use(errorHandler)
@@ -30,7 +32,7 @@ app.use(notFound)
 
 // --------------------------Server------------------------------
 
-const PORT = 4000;
+const PORT =process.env.PORT || 4000;
 const server = app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
 // --------------------------SocketIO------------------------------
