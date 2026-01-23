@@ -1,6 +1,6 @@
-import { useState, type FC } from "react";
-import { MessageSquare, Menu, X} from "lucide-react";
-import { Link } from "react-router-dom";
+import { useState, type FC, useEffect } from "react";
+import { MessageSquare, Menu, X } from "lucide-react";
+import { Link} from "react-router-dom";
 import { useChatState } from "../../context/ChatProvider";
 
 const NAV_LINKS = [
@@ -11,26 +11,43 @@ const NAV_LINKS = [
 
 const Header: FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
     const { user } = useChatState();
+
+    // Handle Scroll Effect for Navbar transparency
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 20);
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
     return (
-        <header className="fixed top-0 left-0 w-full z-30 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800 shadow-lg">
+        <header 
+            className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+                scrolled || isMenuOpen ? "bg-gray-900/95 backdrop-blur-md border-b border-gray-800 shadow-lg" : "bg-transparent border-transparent"
+            }`}
+        >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between items-center h-16">
+                <div className="flex justify-between items-center h-20">
                     <Link
                         to="/"
-                        className="flex items-center text-white text-2xl font-bold transition hover:text-blue-500"
+                        className="flex items-center gap-2 group"
                     >
-                        <MessageSquare className="w-6 h-6 mr-2 text-blue-500" />
-                        ChatBuddies
+                        <div className="bg-blue-600 p-2 rounded-lg group-hover:bg-blue-500 transition">
+                             <MessageSquare className="w-6 h-6 text-white" />
+                        </div>
+                        <span className="text-2xl font-bold text-white tracking-tight">ChatBuddies</span>
                     </Link>
 
                     {/* Desktop Nav */}
-                    <nav className="hidden lg:flex space-x-6">
+                    <nav className="hidden lg:flex items-center gap-8">
                         {NAV_LINKS.map((link) => (
                             <a
                                 key={link.name}
                                 href={link.href}
-                                className="text-gray-300 hover:text-blue-400 font-medium transition duration-150 p-2 rounded-lg"
+                                className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
                             >
                                 {link.name}
                             </a>
@@ -38,11 +55,11 @@ const Header: FC = () => {
                     </nav>
 
                     {/* Desktop CTA Buttons */}
-                    <div className="hidden lg:flex items-center space-x-4">
+                    <div className="hidden lg:flex items-center gap-4">
                         {user ? (
                             <Link
                                 to="/chats"
-                                className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition shadow-md shadow-blue-600/50"
+                                className="px-5 py-2.5 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition shadow-lg shadow-blue-600/30"
                             >
                                 Go to Chats
                             </Link>
@@ -50,16 +67,16 @@ const Header: FC = () => {
                             <>
                                 <Link
                                     to="/auth?mode=login"
-                                    className="text-gray-300 hover:text-blue-400 font-medium transition p-2"
+                                    className="text-gray-300 hover:text-white font-medium transition px-4"
                                 >
                                     Log In
                                 </Link>
 
                                 <Link
                                     to="/auth?mode=register"
-                                    className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition shadow-md shadow-blue-600/50"
+                                    className="px-5 py-2.5 bg-white text-gray-900 font-bold rounded-full hover:bg-gray-100 transition shadow-[0_0_15px_rgba(255,255,255,0.2)]"
                                 >
-                                    Get Started Free
+                                    Get Started
                                 </Link>
                             </>
                         )}
@@ -67,56 +84,58 @@ const Header: FC = () => {
 
                     {/* Mobile Menu Toggle */}
                     <button
-                        className="lg:hidden p-2 text-white hover:bg-gray-800 rounded-lg transition"
+                        className="lg:hidden p-2 text-gray-300 hover:text-white"
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                     >
-                        {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                        {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
                     </button>
                 </div>
             </div>
 
             {/* Mobile Navigation */}
             <div
-                className={`lg:hidden transition-all duration-300 ${isMenuOpen ? "max-h-96 opacity-100 py-2" : "max-h-0 opacity-0 overflow-hidden"
-                    }`}
+                className={`lg:hidden bg-gray-900 border-t border-gray-800 overflow-hidden transition-all duration-300 ${
+                    isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                }`}
             >
-                <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 flex flex-col items-start">
+                <div className="px-4 py-6 space-y-4">
                     {NAV_LINKS.map((link) => (
                         <a
                             key={link.name}
                             href={link.href}
-                            className="text-gray-300 hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium transition duration-150 w-full"
+                            className="block text-lg font-medium text-gray-300 hover:text-blue-400"
                             onClick={() => setIsMenuOpen(false)}
                         >
                             {link.name}
                         </a>
                     ))}
-                    {user ? (
-                        <Link
-                            to="/chats"
-                            className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition shadow-md shadow-blue-600/50"
-                        >
-                            Go to Chats
-                        </Link>) :
-                        (
+                    <div className="pt-4 flex flex-col gap-3">
+                        {user ? (
+                            <Link
+                                to="/chats"
+                                className="w-full py-3 bg-blue-600 text-center text-white font-bold rounded-xl"
+                            >
+                                Go to Chats
+                            </Link>
+                        ) : (
                             <>
                                 <Link
                                     to="/auth?mode=login"
-                                    className="text-gray-300 hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium w-full"
+                                    className="w-full py-3 text-center text-gray-300 border border-gray-700 rounded-xl"
                                     onClick={() => setIsMenuOpen(false)}
                                 >
                                     Log In
                                 </Link>
-
                                 <Link
                                     to="/auth?mode=register"
-                                    className="w-full text-center mt-2 px-3 py-2 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition"
+                                    className="w-full py-3 bg-blue-600 text-center text-white font-bold rounded-xl"
                                     onClick={() => setIsMenuOpen(false)}
                                 >
                                     Get Started Free
                                 </Link>
                             </>
                         )}
+                    </div>
                 </div>
             </div>
         </header>
