@@ -1,6 +1,6 @@
 import { useState, type FC, useEffect } from "react";
 import { MessageSquare, Menu, X } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link} from "react-router-dom";
 import { useChatState } from "../../context/ChatProvider";
 
 const NAV_LINKS = [
@@ -13,7 +13,6 @@ const Header: FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const { user } = useChatState();
-    const location = useLocation();
 
     // Handle Scroll Effect for Navbar transparency
     useEffect(() => {

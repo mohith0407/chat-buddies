@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Send, ExternalLink, ChevronDown, MessageSquare } from 'lucide-react';
+import {  ChevronDown, MessageSquare } from 'lucide-react';
 import { FaGithub, FaLinkedin, FaFacebook } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 
