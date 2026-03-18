@@ -43,7 +43,7 @@ const HeroSection: FC = () => {
                                 <CheckCircle2 className="text-blue-500 w-5 h-5" /> Free for ever
                             </span>
                             <span className="flex items-center gap-2">
-                                <CheckCircle2 className="text-blue-500 w-5 h-5" /> No credentials required
+                                <CheckCircle2 className="text-blue-500 w-5 h-5" /> With Secured authentication
                             </span>
                         </div>
                     </div>

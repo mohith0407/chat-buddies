@@ -1,11 +1,14 @@
 import { useEffect, type FC } from "react";
 import Header from "../components/home/Header";
 import HeroSection from "../components/home/HeroSection";
-import AppShowcase from "../components/home/AppShowcase"; // New component
-import BusinessFeature from "../components/home/BussinessFeature"; // New component
+import AppShowcase from "../components/home/AppShowcase"; 
+import BusinessFeature from "../components/home/BussinessFeature"; 
 import Footer from "../components/home/Footer";
 import { useChatState } from "../context/ChatProvider";
 import { useNavigate } from "react-router-dom";
+import FeaturesSection from "../components/home/FeaturesSection";
+import SecuritySection from "../components/home/SecuritySection";
+import PricingSection from "../components/home/PricingSection";
 
 const Homepage: FC = () => {
     const { user } = useChatState();
@@ -23,12 +26,10 @@ const Homepage: FC = () => {
             <main>
                 <HeroSection />
                 <AppShowcase />
+                <FeaturesSection />
                 <BusinessFeature />
-                {/* Optional: If you still want the icon grid, 
-                  you can include <FeaturesSection /> here or remove it 
-                  if the new layout is sufficient. 
-                  Based on the design, the BusinessFeature replaces the need for the generic grid.
-                */}
+                <SecuritySection />
+                <PricingSection />
             </main>
             <Footer />
         </div>
